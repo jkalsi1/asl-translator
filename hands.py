@@ -4,25 +4,14 @@ import mediapipe as mp
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
-cap = cv2.VideoCapture(0)
-
-if not cap.isOpened():
-    print("Error: Could not open webcam.")
-    exit()
-
-# Start hand detection
-with mp_hands.Hands(
-    static_image_mode=False,
-    max_num_hands=1,
-    min_detection_confidence=0.5,
-    min_tracking_confidence=0.5) as hands:
-
-    try:
-        for i in range(1):
-            ret, frame = cap.read()
-            if not ret:
-                print("Failed to grab frame.")
-                continue
+def process_frame(frame):
+    # Start hand detection
+    with mp_hands.Hands(
+        static_image_mode=False,
+        max_num_hands=1,
+        min_detection_confidence=0.5,
+        min_tracking_confidence=0.5) as hands:
+        try:
 
             # Flip the frame horizontally for correct-handedness
             frame = cv2.flip(frame, 1)
@@ -42,6 +31,6 @@ with mp_hands.Hands(
             # Display the frame with hand annotations
             cv2.imshow('Hand Detection', frame)
 
-    finally:
-        cap.release()
-        cv2.destroyAllWindows()
+        finally:
+            cv2.destroyAllWindows()
+    return frame
