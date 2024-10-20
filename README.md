@@ -1,1 +1,1 @@
-This is a project
+Usage: $ python hands.py
