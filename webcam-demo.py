@@ -21,7 +21,7 @@ def main():
 
             # Process the frame for hand detection
             frame_with_hands, hands_arr = process(frame)
-            print(type(hands_arr[0]))
+            print(hands_arr)
             
             # Display the frame with hand landmarks
             # cv2.imshow('Hand Detection', frame_with_hands)
