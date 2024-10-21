@@ -22,9 +22,8 @@ def process(frame):
         # Process the frame to detect hands
         results = hands.process(frame_rgb)
 
-        print(results.multi_hand_landmarks)
         # If hands are detected, draw landmarks
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
                 mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
-        return frame
+        return frame, results.multi_hand_landmarks
