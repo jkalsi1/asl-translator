@@ -26,7 +26,8 @@ def process(frame):
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
                 for landmark in hand_landmarks.landmark:
-                    # Append x, y, z coordinates of each landmark to the flattened list
                     flattened_landmarks.extend([landmark.x, landmark.y, landmark.z])
                 mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+
+        # returns flattened handmark list for training
         return frame, flattened_landmarks
