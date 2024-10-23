@@ -22,6 +22,7 @@ def process(frame):
         # Process the frame to detect hands
         results = hands.process(frame_rgb)
         flattened_landmarks = []
+        print(results.multi_hand_landmarks)
         # If hands are detected, draw landmarks
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
