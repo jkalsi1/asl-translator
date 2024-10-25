@@ -12,7 +12,7 @@ def main():
 
     try:
         frame_with_hands = ""
-        for i in range(1):
+        while True:
             ret, frame = cap.read()
 
             if not ret:
@@ -24,7 +24,7 @@ def main():
             print(hands_arr)
             
             # Display the frame with hand landmarks
-            # cv2.imshow('Hand Detection', frame_with_hands)
+            cv2.imshow('Hand Detection', frame_with_hands)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
