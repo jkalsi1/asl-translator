@@ -20,15 +20,13 @@ def main():
                 break
 
             # Process the frame for hand detection
-            frame_with_hands, hands_arr = process(frame)
-            print(hands_arr)
+            frame_with_hands, hands_arr = process(frame, True)
             
             # Display the frame with hand landmarks
-            cv2.imshow('Hand Detection', frame_with_hands)
+            cv2.imshow('Hand Detection',  cv2.cvtColor(frame_with_hands, cv2.COLOR_RGB2BGR))
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-        cv2.imshow('Hand Detection', frame_with_hands)
     finally:
         cap.release()
         cv2.destroyAllWindows()

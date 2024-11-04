@@ -4,7 +4,7 @@ import mediapipe as mp
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
-def process(frame):
+def process(frame, is_webcam):
     """Process a frame to detect and annotate hand landmarks."""
     
     with mp_hands.Hands(
@@ -17,7 +17,8 @@ def process(frame):
         frame = cv2.flip(frame, 1)
 
         # # Convert the BGR image to RGB WEBCAME ONLY
-        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        if is_webcam:
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         # Process the frame to detect hands
         results = hands.process(frame)
