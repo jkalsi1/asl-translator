@@ -8,25 +8,13 @@ import cv2
 asl_dir = "asl_dataset"
 sub_dirs = sorted([d for d in os.listdir(asl_dir) if os.path.isdir(os.path.join(asl_dir, d))])
 
-dir_0 = os.path.join(asl_dir,sub_dirs[0])
-for img in os.listdir(dir_0):
-    print(dir_0, img)
-    image_path = os.path.join(dir_0, img)
-    im = imageio.imread(image_path)
-    frame, landmarks = process(im)
-    plt.imshow( frame)
-    plt.show()
-    print(landmarks)
-
-# # Iterate through each subdirectory in alphabetical order
-# for sub_dir in sub_dirs:
-#     sub_dir_path = os.path.join(asl_dir, sub_dir)
-
-#     images = sorted([img for img in os.listdir(sub_dir_path) if img.endswith(('.jpg', '.jpeg', '.png'))])
-    
-#     # Call the function on each image
-#     for img in images:
-#         image_path = os.path.join(sub_dir_path, img)
-#         im = imageio.imread(image_path)
-#         frame, arr = process(im)
-#         print(arr)
+for dir in sub_dirs:
+    cur = os.path.join(asl_dir,dir)
+    for img in os.listdir(cur):
+        print(cur, img)
+        image_path = os.path.join(cur, img)
+        im = imageio.imread(image_path)
+        frame, landmarks = process(im)
+        plt.imshow( frame)
+        if landmarks:
+            plt.show()

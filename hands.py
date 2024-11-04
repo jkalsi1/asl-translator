@@ -8,17 +8,19 @@ def process(frame):
     """Process a frame to detect and annotate hand landmarks."""
     
     with mp_hands.Hands(
+        static_image_mode=False,
         max_num_hands=1,
-        ) as hands:
+        min_detection_confidence=0.5,
+        min_tracking_confidence=0.5) as hands:
 
         # Flip the frame horizontally for a correct handedness
         frame = cv2.flip(frame, 1)
 
-        # Convert the BGR image to RGB
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # # Convert the BGR image to RGB WEBCAME ONLY
+        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         # Process the frame to detect hands
-        results = hands.process(frame_rgb)
+        results = hands.process(frame)
         flattened_landmarks = []
         # If hands are detected, draw landmarks
         if results.multi_hand_landmarks:
