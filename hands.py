@@ -4,12 +4,12 @@ import mediapipe as mp
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
-def process(frame, is_webcam):
+def process(frame, is_webcam, num_hands):
     """Process a frame to detect and annotate hand landmarks."""
     
     with mp_hands.Hands(
         static_image_mode=False,
-        max_num_hands=1,
+        max_num_hands=num_hands,
         min_detection_confidence=0.5,
         min_tracking_confidence=0.5) as hands:
 

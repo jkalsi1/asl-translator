@@ -18,10 +18,9 @@ sub_dirs = sorted([d for d in os.listdir(asl_dir) if os.path.isdir(os.path.join(
 for dir in sub_dirs:
     cur = os.path.join(asl_dir,dir)
     for img in os.listdir(cur):
-        # print(cur, img)
         image_path = os.path.join(cur, img)
         im = imageio.imread(image_path)
-        frame, landmarks = process(im, False)
+        frame, landmarks = process(im, False, 1)
         try:
             asl_dict[dir].append(landmarks)
         except Exception as e:
