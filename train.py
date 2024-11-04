@@ -1,4 +1,3 @@
-# import tensorflow as tf
 from hands import process
 import os
 import imageio.v3 as imageio
