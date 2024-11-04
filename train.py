@@ -15,6 +15,7 @@ for img in os.listdir(dir_0):
     im = imageio.imread(image_path)
     frame, landmarks = process(im)
     plt.imshow( frame)
+    plt.show()
     print(landmarks)
 
 # # Iterate through each subdirectory in alphabetical order

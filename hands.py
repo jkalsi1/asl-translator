@@ -8,10 +8,8 @@ def process(frame):
     """Process a frame to detect and annotate hand landmarks."""
     
     with mp_hands.Hands(
-        static_image_mode=False,
         max_num_hands=1,
-        min_detection_confidence=0.5,
-        min_tracking_confidence=0.5) as hands:
+        ) as hands:
 
         # Flip the frame horizontally for a correct handedness
         frame = cv2.flip(frame, 1)
