@@ -1,15 +1,14 @@
 import cv2
 from hands import process
-from keras.api.models import load_model
 import numpy as np
+import random
+from keras.api.models import load_model
 
 model = load_model('asl-model.keras')
 
 model.summary()
-
 key = {i: str(i) for i in range(10)} 
 key.update({i + 10: chr(97 + i) for i in range(26)})
-
 
 def main():
     cap = cv2.VideoCapture(0)
@@ -19,23 +18,36 @@ def main():
         exit()
 
     try:
-        frame_with_hands = ""
-        for i in range(1):
+        while True:
             ret, frame = cap.read()
+
             if not ret:
                 print("Failed to grab frame.")
                 break
 
-            frame_with_hands, landmarks = process(frame, True, 2)
+            frame_with_hands, landmarks, bounding_box = process(frame, True, 2)
 
             # Predict here
-            if landmarks is not None:
+            if len(landmarks) == 63:
                 landmarks = np.array(landmarks, dtype=np.float32)
                 landmarks = landmarks.reshape(1, -1)
-                print(landmarks.shape)
                 res = model.predict(landmarks)
+                prediction = key[np.argmax(res)]
                 
-                print(key[np.argmax(res)])
+            if bounding_box and prediction:
+                x_min, y_min, _, _ = bounding_box
+                cv2.putText(
+                    frame_with_hands,
+                    prediction,
+                    (x_min, y_min - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.8,
+                    (0, 0, 255),
+                    2,
+                    cv2.LINE_AA
+                )
+            
+            cv2.imshow('Hand Detection', cv2.cvtColor(frame_with_hands, cv2.COLOR_RGB2BGR))
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
