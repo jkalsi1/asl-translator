@@ -27,13 +27,14 @@ def main():
 
             frame_with_hands, landmarks, bounding_box = process(frame, True, 2)
             prediction = None
-            # Predict here
+            # Make prediction based on hand landmarks
             if len(landmarks) == 63:
                 landmarks = np.array(landmarks, dtype=np.float32)
                 landmarks = landmarks.reshape(1, -1)
                 res = model.predict(landmarks)
                 prediction = key[np.argmax(res)]
                 
+            # Draw prediction on returned frame if it exists
             if bounding_box and prediction:
                 x_min, y_min, _, _ = bounding_box
                 cv2.putText(
@@ -46,7 +47,7 @@ def main():
                     2,
                     cv2.LINE_AA
                 )
-            
+            # Display image with frame, skeleton, and prediction
             cv2.imshow('Hand Detection', cv2.cvtColor(frame_with_hands, cv2.COLOR_RGB2BGR))
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
