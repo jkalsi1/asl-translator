@@ -26,7 +26,7 @@ def main():
                 break
 
             frame_with_hands, landmarks, bounding_box = process(frame, True, 2)
-
+            prediction = None
             # Predict here
             if len(landmarks) == 63:
                 landmarks = np.array(landmarks, dtype=np.float32)
