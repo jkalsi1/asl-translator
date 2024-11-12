@@ -1,60 +1,75 @@
 import cv2
-from hands import process
 import numpy as np
+import mediapipe as mp
+import pickle
 import random
 from keras.api.models import load_model
 
-model = load_model('asl-model.keras')
+model_dict = pickle.load(open('./model.p', 'rb'))
+model = model_dict['model']
 
-model.summary()
-key = {i: str(i) for i in range(10)} 
-key.update({i + 10: chr(97 + i) for i in range(26)})
+mp_hands = mp.solutions.hands
+mp_drawing = mp.solutions.drawing_utils
+mp_drawing_styles = mp.solutions.drawing_styles
 
-def main():
-    cap = cv2.VideoCapture(0)
+hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
+labels_dict = {0: 'A', 1: 'B', 2: 'C', 3: 'D'}
 
-    if not cap.isOpened():
-        print("Error: Could not open webcam.")
-        exit()
+cap = cv2.VideoCapture(0)
 
-    try:
-        while True:
-            ret, frame = cap.read()
+if not cap.isOpened():
+    print("Error: Could not open webcam.")
+    exit()
+try: 
+    while True:
 
-            if not ret:
-                print("Failed to grab frame.")
-                break
+        data_aux = []
+        x_ = []
+        y_ = []
 
-            frame_with_hands, landmarks, bounding_box = process(frame, True, 2)
-            prediction = None
-            # Make prediction based on hand landmarks
-            if len(landmarks) == 63:
-                landmarks = np.array(landmarks, dtype=np.float32)
-                landmarks = landmarks.reshape(1, -1)
-                res = model.predict(landmarks)
-                prediction = key[np.argmax(res)]
-                
-            # Draw prediction on returned frame if it exists
-            if bounding_box and prediction:
-                x_min, y_min, _, _ = bounding_box
-                cv2.putText(
-                    frame_with_hands,
-                    prediction,
-                    (x_min, y_min - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.8,
-                    (0, 0, 255),
-                    2,
-                    cv2.LINE_AA
+        ret, frame = cap.read()
+
+        H, W, _ = frame.shape
+
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        results = hands.process(frame_rgb)
+        if results.multi_hand_landmarks:
+            for hand_landmarks in results.multi_hand_landmarks:
+                mp_drawing.draw_landmarks( # Just shows landmarks on photos
+                    frame, # image to draw
+                    hand_landmarks, # model output
+                    mp_hands.HAND_CONNECTIONS,
+                    mp_drawing_styles.get_default_hand_landmarks_style(),
+                    mp_drawing_styles.get_default_hand_connections_style()
                 )
-            # Display image with frame, skeleton, and prediction
-            cv2.imshow('Hand Detection', cv2.cvtColor(frame_with_hands, cv2.COLOR_RGB2BGR))
 
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-    finally:
-        cap.release()
-        cv2.destroyAllWindows()
+            for hand_landmarks in results.multi_hand_landmarks:
+                    for i in range(len(hand_landmarks.landmark)):
+                        # Add landmarks to flattened, regular array
+                        x = hand_landmarks.landmark[i].x
+                        y = hand_landmarks.landmark[i].y
+                        data_aux.append(x)
+                        data_aux.append(y)
+                        x_.append(x)
+                        y_.append(y)
 
-if __name__ == '__main__':
-    main()
+            x1 = int(min(x_) * W) - 10
+            y1 = int(min(y_) * H) - 10
+
+            x2 = int(max(x_) * W) - 10
+            y2 = int(max(y_) * H) - 10
+
+            prediction = model.predict([np.asarray(data_aux)])
+
+            predicted_char = labels_dict[int(prediction[0])]
+
+            cv2.rectangle(frame, (x1, y1),(x2, y2), (0, 0, 0), 4)
+            cv2.putText(frame, predicted_char, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3,
+                        cv2.LINE_AA)
+
+        cv2.imshow('frame', frame)
+        cv2.waitKey(25)
+finally:
+    cap.release()
+    cv2.destroyAllWindows()
