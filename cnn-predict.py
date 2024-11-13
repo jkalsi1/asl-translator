@@ -4,10 +4,7 @@ import numpy as np
 from keras.api.models import load_model
 from model_classes import AlexNet, SimpleNet
 
-model = load_model('alex-net.keras', custom_objects={'AlexNet': AlexNet})
-model.summary()
-
-simpleModel = load_model('simple-model.keras', custom_objects={'SimpleNet': SimpleNet})
+simpleModel = load_model('simple-model.keras')
 simpleModel.summary()
 
 

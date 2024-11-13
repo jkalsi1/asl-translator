@@ -3,7 +3,7 @@ from hands import process
 import numpy as np
 from keras.api.models import load_model
 
-model = load_model('asl-model.keras')
+model = load_model('mp-model.keras')
 
 model.summary()
 key = {i: str(i) for i in range(10)} 
