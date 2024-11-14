@@ -13,7 +13,7 @@ mp_drawing = mp.solutions.drawing_utils
 mp_drawing_styles = mp.solutions.drawing_styles
 
 hands = mp_hands.Hands(static_image_mode=True, min_detection_confidence=0.3)
-labels_dict = {0: 'A', 1: 'B', 2: 'C', 3: 'D'}
+labels_dict = {0: 'A', 1: 'B', 2: 'C'}
 
 cap = cv2.VideoCapture(0)
 
@@ -62,7 +62,7 @@ try:
 
             prediction = model.predict([np.asarray(data_aux)])
 
-            predicted_char = labels_dict[int(prediction[0])]
+            predicted_char = labels_dict[int(prediction[0])]     
 
             cv2.rectangle(frame, (x1, y1),(x2, y2), (0, 0, 0), 4)
             cv2.putText(frame, predicted_char, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3,
