@@ -20,7 +20,7 @@ def main():
                 break
 
             # Process the frame for hand detection
-            frame_with_hands, hands_arr = process(frame, True, 2)
+            frame_with_hands, hands_arr, *rest = process(frame, True, 2)
             
             # Display the frame with hand landmarks
             cv2.imshow('Hand Detection',  cv2.cvtColor(frame_with_hands, cv2.COLOR_RGB2BGR))
