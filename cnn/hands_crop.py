@@ -1,6 +1,10 @@
 import cv2
 import mediapipe as mp
+import numpy as np
+import cvzone
+from cvzone.SelfiSegmentationModule import SelfiSegmentation
 
+segmentor = SelfiSegmentation()
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
@@ -22,7 +26,8 @@ def process(frame, is_webcam, num_hands):
         flattened_landmarks = []
         cropped_image = None
         original_frame_with_box = frame.copy()
-        bounding_box = ()
+        bounding_box = None
+        edges = None
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
                 # Calculate bounding box coordinates
@@ -47,13 +52,29 @@ def process(frame, is_webcam, num_hands):
 
                 # Crop the frame to the bounding box
                 cropped_image = frame[y_min:y_max, x_min:x_max]
+                green = (0,255,0)
+                
+                try:
+                    if len(cropped_image.shape) == 3 and cropped_image.shape[2] == 3:
+                        cropped_image = cv2.GaussianBlur(cropped_image, (9, 9), 3)
+                        cropped_image = segmentor.removeBG(cropped_image, green, cutThreshold=0.2)
+                        gray_img = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
+                        
+                        
+                        gray_img = gray_img.astype(np.uint8)
+                        edges = cv2.Canny(gray_img, 100, 200)
+                        
+                        edges = edges.astype(np.float32)
+                        edges = np.expand_dims(edges, axis=-1)
+                except Exception as e:
+                    print(f'error pre processing webcam input, {e}')
+                    
 
                 # Add landmarks to flattened list
                 for landmark in hand_landmarks.landmark:
                     flattened_landmarks.extend([landmark.x, landmark.y, landmark.z])
 
                 bounding_box = (x_min, y_min, x_max, y_max)
-                # Only process the first detected hand
-                break  # Remove this if you need multiple hands
+                break 
 
-        return original_frame_with_box, flattened_landmarks, bounding_box, cropped_image
+        return original_frame_with_box, flattened_landmarks, bounding_box, edges
