@@ -4,7 +4,6 @@ import numpy as np
 from keras.api.models import load_model
 
 simpleModel = load_model('/Users/jagan-kalsi/Desktop/class/csc/csc487/asl/cnn/simple-model.keras')
-# simpleModel.summary()
 
 # Dict for getting prediction from np.argmax
 key = {i: str(i) for i in range(10)} 
@@ -53,10 +52,12 @@ def main():
                     cv2.LINE_AA
                 )
             
-                cv2.imshow('American Sign Language Translator', frame_with_hands)
+            cv2.imshow('American Sign Language Translator', frame_with_hands)
             
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
+    except:
+        print("couldn't find hand.")
     finally:
         cap.release()
         cv2.destroyAllWindows()
