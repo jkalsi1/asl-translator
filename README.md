@@ -1,3 +1,18 @@
+# American Sign Language Translator
+
+This project aims to translate ASL letters with help from neural networks. I contrast two inference pipelines comparing accuracy:
+
+# Data Source:
+https://www.kaggle.com/datasets/ayuraj/asl-dataset
+
+### Convolutional Neural Network
+
+This model is comprised of 3 convolutional layers, 3 pooling layers, and 2 dense layers. It achieved a final validation accuracy of ~83%, based on images from the training dataset.
+
+### Deep Neural Network
+
+This model is comprised of 6 dense layers, with as many dropout layers in an effort to prevent overfitting. It achieved a final validation accuracy of ~90%.
+
 # How to run:
     - pip install -r requirements.txt
     - mediapipe webcam demo:
@@ -9,5 +24,3 @@
     - DNN Model x Mediapipe Preprocessing
         - mp-model.ipynb
 
-# Data Source:
-https://www.kaggle.com/datasets/ayuraj/asl-dataset
